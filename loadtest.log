@@ -1,0 +1,13 @@
+[20/11/2022, 20:49:54] @colyseus/loadtest
+endpoint: ws://localhost:2567
+roomName: my_room
+numClients: 2
+scriptFile: /Users/envansdoni/Documents/colyseus-server/loadtest/example.ts
+logLevel: all
+output: /Users/envansdoni/Documents/colyseus-server/loadtest.log
+[20/11/2022, 20:49:54] Error: connect ECONNREFUSED 127.0.0.1:2567
+[20/11/2022, 20:49:54] Error: connect ECONNREFUSED 127.0.0.1:2567
+[20/11/2022, 20:49:56] Finished. Summary:
+Successful connections: 0
+Failed connections: 2
+Total errors: 2
