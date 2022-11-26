@@ -9,11 +9,11 @@ jobs:
     steps:
       - name: Deploy server
         uses: appleboy/ssh-action@master
-        with:
+        env:
           host: ${{ secrets.SSH_HOST }}
           key: ${{ secrets.SSH_KEY }}
           username: ${{ secrets.SSH_USERNAME }}
-
+        with:
           script: |
             cd /home/envans/apps/server-colyseus
             git checkout develop
