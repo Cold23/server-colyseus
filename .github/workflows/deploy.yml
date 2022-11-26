@@ -20,3 +20,4 @@ jobs:
           HOST: ${{ secrets.SSH_HOST }}
           KEY: ${{ secrets.SSH_KEY }}
           USERNAME: ${{ secrets.SSH_USERNAME }}
+          PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
