@@ -4,18 +4,24 @@ on:
     branches: [main]
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  copy:
+    runs-on: ubuntu-lastest
     environment: main
+  deploy:
     steps:
+      - name: copy file via ssh password
       - uses: actions/checkout@v2
-      - name: Deploy server
-        uses: appleboy/ssh-action@master
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.PORT }}
+        source: ".,!node_modules"
+        target: "~/apps/server-colyseus/"
         with:
           script: |
             cd /home/envans/apps/server-colyseus
-            git checkout main
-            git pull origin main
             docker ps -aq | xargs docker stop | xargs docker rm
             docker rmi envans/colyseus
             docker build -t envans/colyseus .
