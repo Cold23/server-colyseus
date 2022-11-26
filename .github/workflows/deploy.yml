@@ -18,7 +18,7 @@ jobs:
         source: ".,!node_modules"
         target: "~/apps/server-colyseus/"
       - name: Make docker
-      uses: appleboy/ssh-action@master
+      - uses: appleboy/ssh-action@master
       with:
         script: |
           cd /home/envans/apps/server-colyseus
@@ -27,9 +27,9 @@ jobs:
           docker build -t envans/colyseus .
           docker run -d -p 8080:8080 --restart unless-stopped envans/colyseus
           echo 'LATEST CHANGES PULLED'
-        env:
-          HOST: ${{ secrets.SSH_HOST }}
-          KEY: ${{ secrets.SSH_KEY }}
-          USERNAME: ${{ secrets.SSH_USERNAME }}
-          PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
-          FINGERPRINT: ${{ secrets.SSH_FINGER }}
+      env:
+        HOST: ${{ secrets.SSH_HOST }}
+        KEY: ${{ secrets.SSH_KEY }}
+        USERNAME: ${{ secrets.SSH_USERNAME }}
+        PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
+        FINGERPRINT: ${{ secrets.SSH_FINGER }}
