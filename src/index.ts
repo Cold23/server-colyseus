@@ -14,7 +14,8 @@ const gameServer = new Server({
     server,
   }),
 })
+//
 gameServer.define('general', MyRoom)
 gameServer.listen(port)
 // console.log(`Listening on ws://localhost:${port}`)
-//
+
