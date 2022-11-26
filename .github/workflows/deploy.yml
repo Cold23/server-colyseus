@@ -13,8 +13,12 @@ jobs:
         with:
           script: |
             cd /home/envans/apps/server-colyseus
-            git checkout develop
+            git checkout main
             git pull
+            docker ps -aq | xargs docker stop | xargs docker rm
+            docker rmi envans/colyseus
+            docker build -t envans/colyseus .
+            docker run -d -p 8080:8080 --restart unless-stopped envans/colyseus
             echo 'LATEST CHANGES PULLED'
         env:
           HOST: ${{ secrets.SSH_HOST }}
