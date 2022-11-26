@@ -17,7 +17,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: '.,!node_modules'
           target: '~/apps/server-colyseus/'
-      - name: deploy
       - uses: appleboy/ssh-action@master
         with:
           script: |
