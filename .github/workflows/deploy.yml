@@ -11,11 +11,12 @@ jobs:
       - name: Deploy server
         uses: appleboy/ssh-action@master
         with:
-          HOST: ${{ secrets.SSH_HOST }}
-          KEY: ${{ secrets.SSH_KEY }}
-          USERNAME: ${{ secrets.SSH_USERNAME }}
           script: |
             cd /home/envans/apps/server-colyseus
             git checkout develop
             git pull
             echo 'LATEST CHANGES PULLED'
+        env:
+          HOST: ${{ secrets.SSH_HOST }}
+          KEY: ${{ secrets.SSH_KEY }}
+          USERNAME: ${{ secrets.SSH_USERNAME }}
