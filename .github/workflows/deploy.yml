@@ -17,6 +17,16 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: '.,!node_modules'
           target: '~/apps/server-colyseus/'
+      - uses: appleboy/ssh-action@master
+      - name: deploy
+        with:
+          script: |
+            cd /home/envans/apps/server-colyseus
+            docker ps -aq | xargs docker stop | xargs docker rm
+            docker rmi envans/colyseus
+            docker build -t envans/colyseus .
+            docker run -d -p 8080:8080 --restart unless-stopped envans/colyseus
+            echo 'LATEST CHANGES PULLED'
         env:
           HOST: ${{ secrets.SSH_HOST }}
           KEY: ${{ secrets.SSH_KEY }}
