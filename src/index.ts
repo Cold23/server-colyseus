@@ -8,7 +8,6 @@ const port = Number(process.env.PORT || 2567)
 const app = express()
 
 app.use(express.json())
-//
 const server = http.createServer(app)
 const gameServer = new Server({
   transport: new WebSocketTransport({
