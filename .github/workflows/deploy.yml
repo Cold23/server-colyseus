@@ -6,14 +6,14 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: main
     steps:
       - name: Deploy server
         uses: appleboy/ssh-action@master
-        env:
+        with:
           host: ${{ secrets.SSH_HOST }}
           key: ${{ secrets.SSH_KEY }}
           username: ${{ secrets.SSH_USERNAME }}
-        with:
           script: |
             cd /home/envans/apps/server-colyseus
             git checkout develop
