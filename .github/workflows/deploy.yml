@@ -4,10 +4,9 @@ on:
     branches: [main]
 
 jobs:
-  copy:
+  deploy:
     runs-on: ubuntu-lastest
     environment: main
-  deploy:
     steps:
       - name: copy file via ssh password
       - uses: actions/checkout@v2
