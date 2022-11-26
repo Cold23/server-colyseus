@@ -16,7 +16,6 @@ jobs:
             cd /home/envans/apps/server-colyseus
             git checkout main
             git pull origin main
-            echo $PASSPHRASE
             docker ps -aq | xargs docker stop | xargs docker rm
             docker rmi envans/colyseus
             docker build -t envans/colyseus .
@@ -27,3 +26,4 @@ jobs:
           KEY: ${{ secrets.SSH_KEY }}
           USERNAME: ${{ secrets.SSH_USERNAME }}
           PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
+          FINGERPRINT: ${{ secrets.SSH_FINGER }}
