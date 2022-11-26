@@ -4,10 +4,10 @@ import Matter from 'matter-js'
 export class Player extends Schema {
   @type('string') id: string
   @type(['number']) position: number[]
-
-  constructor(id: string, position: number[]) {
+  @type('number') order: number
+  constructor(id: string, position: number[], order: number) {
     super()
-
+    this.order = order
     this.id = id
     this.position = position
   }

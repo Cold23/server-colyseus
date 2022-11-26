@@ -54,6 +54,10 @@ export class MyRoom extends Room<MyRoomState> {
     })
   }
 
+  isBallOut() {
+    const pos = this.state.ball.position
+    return pos.x > 1200 || pos.x < 0 || pos.y < 0 || pos.y > 800
+  }
   reset() {
     //set to initial pos and set velocity to 0
     this.state.entities.forEach((entity) => {
@@ -100,46 +104,15 @@ export class MyRoom extends Room<MyRoomState> {
       if (this.state.paused) return
       this.state.entities.forEach((body) => {
         if (body.player.label.split(' ')[1] === client.sessionId) {
-          const oldDirection = { x: direction[0] * 6, y: direction[1] * 6 }
-          const dirLength = Math.sqrt(oldDirection.x ** 2 + oldDirection.y ** 2)
-          const dirNormalized = {
-            x: oldDirection.x / dirLength,
-            y: oldDirection.y / dirLength,
-          }
-          const currentPos = body.player.position
-          const dirDiff = {
-            x: currentPos.x - position.x,
-            y: currentPos.y - position.y,
-          }
-          const dirLenghtCurrent = Math.sqrt(dirDiff.x ** 2 + dirDiff.y ** 2)
-          const dirNormalizedDiff = {
-            x: dirDiff.x / dirLenghtCurrent,
-            y: dirDiff.y / dirLenghtCurrent,
-          }
-          let dirFinal = {
-            x: dirNormalizedDiff.x + dirNormalized.x,
-            y: dirNormalizedDiff.y + dirNormalized.y,
-          }
-          if (
-            Math.abs(dirNormalized.x - dirNormalizedDiff.x) < 0.01 &&
-            Math.abs(dirNormalized.y - dirNormalizedDiff.y) < 0.01
-          ) {
-            dirFinal = dirNormalized
-          }
-          if (direction[0] === 0 && direction[1] === 0) {
-            dirFinal = { x: 0, y: -1 }
-          }
-          const dirFinalLength = Math.sqrt(dirFinal.x ** 2 + dirFinal.y ** 2)
-          const dirFinalNormalized = {
-            x: dirFinal.x / dirFinalLength,
-            y: dirFinal.y / dirFinalLength,
-          }
           Matter.Body.setVelocity(body.player, {
-            x: dirFinalNormalized.x * 30,
-            y: dirFinalNormalized.y * 30,
+            x: direction[0] * 16,
+            y: direction[1] * 16,
           })
           this.clock.setTimeout(() => {
-            Matter.Body.setVelocity(body.player, oldDirection)
+            Matter.Body.setVelocity(body.player, {
+              x: direction[0] * 6,
+              y: direction[1] * 6,
+            })
           }, 150)
         }
       })
@@ -186,7 +159,17 @@ export class MyRoom extends Room<MyRoomState> {
         status: false,
         player: null as any,
       }
-      if (!this.state.paused && this.state.entities.length >= 2) {
+      let out = false
+      if (this.isBallOut() && !this.state.paused) {
+        this.freezeAll()
+        Matter.Body.setVelocity(this.state.ball, { x: 0, y: 0 })
+        out = true
+        this.state.paused = true
+        this.setState(this.state)
+        this.clock.setTimeout(() => {
+          this.reset()
+        }, 1500)
+      } else if (!this.state.paused && this.state.entities.length >= 2) {
         this.state.entities.forEach((entity) => {
           if (Matter.Collision.collides(entity.goal, this.state.ball, null)) {
             goal.status = true
@@ -210,6 +193,7 @@ export class MyRoom extends Room<MyRoomState> {
         ball: {
           position: this.state.ball.position,
         },
+        out: out,
         delta: ev.source.delta,
         time: this.clock.elapsedTime,
         goal: goal.status && goal,
@@ -223,9 +207,10 @@ export class MyRoom extends Room<MyRoomState> {
     const player = new Player(
       client.sessionId,
       this.state.positions[this.state.nextIdx],
+      this.state.nextIdx,
     )
     this.state.players.push(player)
-    this.state.nextIdx = 1
+    this.state.nextIdx = (this.state.nextIdx + 1) % 2
     this.setState(this.state)
     console.log(client.sessionId, 'joined!')
     this.broadcast('joined', {
@@ -237,7 +222,7 @@ export class MyRoom extends Room<MyRoomState> {
   onLeave(client: Client, consented: boolean) {
     this.state.players = this.state.players.filter((e, idx) => {
       if (e.id === client.sessionId) {
-        this.state.nextIdx = idx
+        this.state.nextIdx = e.order
         return false
       }
       return true
