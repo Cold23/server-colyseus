@@ -16,7 +16,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           source: '.,!node_modules'
-          target: '~/app/gobarber-backend'
+          target: '~/apps/server-colyseus/'
         env:
           HOST: ${{ secrets.SSH_HOST }}
           KEY: ${{ secrets.SSH_KEY }}
