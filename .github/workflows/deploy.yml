@@ -5,31 +5,31 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest
     environment: main
     steps:
-      - name: copy file via ssh password
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@master
+      - name: copy files
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         source: ".,!node_modules"
-        target: "~/apps/server-colyseus/"
-      - name: Make docker
+        target: "~/app/gobarber-backend"
+      - name: Deploy server
       - uses: appleboy/ssh-action@master
-      with:
-        script: |
-          cd /home/envans/apps/server-colyseus
-          docker ps -aq | xargs docker stop | xargs docker rm
-          docker rmi envans/colyseus
-          docker build -t envans/colyseus .
-          docker run -d -p 8080:8080 --restart unless-stopped envans/colyseus
-          echo 'LATEST CHANGES PULLED'
-      env:
-        HOST: ${{ secrets.SSH_HOST }}
-        KEY: ${{ secrets.SSH_KEY }}
-        USERNAME: ${{ secrets.SSH_USERNAME }}
-        PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
-        FINGERPRINT: ${{ secrets.SSH_FINGER }}
+        with:
+          script: |
+            cd /home/envans/apps/server-colyseus
+            docker ps -aq | xargs docker stop | xargs docker rm
+            docker rmi envans/colyseus
+            docker build -t envans/colyseus .
+            docker run -d -p 8080:8080 --restart unless-stopped envans/colyseus
+            echo 'LATEST CHANGES PULLED'
+        env:
+          HOST: ${{ secrets.SSH_HOST }}
+          KEY: ${{ secrets.SSH_KEY }}
+          USERNAME: ${{ secrets.SSH_USERNAME }}
+          PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
+          FINGERPRINT: ${{ secrets.SSH_FINGER }}
